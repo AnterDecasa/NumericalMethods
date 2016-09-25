@@ -6,7 +6,12 @@
 package lagrangeinterpolation;
 
 import java.awt.Color;
+import java.awt.List;
+import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 
 /**
@@ -18,47 +23,27 @@ public class UI extends javax.swing.JFrame {
     /**
      * Creates new form UI
      */
-    //float[] x = {1,2,3,7};
-    //float[] y = {3,-1,4,-3};
-    float[] x = {1,2,3,7};
-    float[] y = {1,2,3,7};
+    //float[] x = {0,0,0,0,0};
+    //float[] y = {0,0,0,0,0};
+    //float[] x = {0,0,0,0};
+    //float[] y = {0,0,0,0};
+    ArrayList<Float> x = new ArrayList<Float>();
+    ArrayList<Float> y = new ArrayList<Float>();
+    float[] xtest = {1,2,3,7};
+    float[] ytest = {3,-1,4,-3};
 
-    float a = 4;
+    float a;
     String equation = "";
+    String solution = "";
+    float answerY;
+    
     public UI() {
         initComponents();
-        String currEquation = getEquation(a,x,y);
-        equation = currEquation;
-        System.out.println(currEquation);
-        System.out.println("f(4): " + getY(a,currEquation));
-        BufferedImage invertedGraph = new BufferedImage(500, 500, BufferedImage.TYPE_INT_RGB);
-        int width = invertedGraph.getWidth();
-        int height = invertedGraph.getHeight();
+        //String currEquation = LagrangeInterpolation.getEquation(a,xtest,ytest);
+        //equation = currEquation;
+        //System.out.println(currEquation);
+        //System.out.println("f(4): " + LagrangeInterpolation.getY(a,currEquation));
         
-        for(int i = 0; i < height; i++){
-            for(int j = 0; j < width; j++){
-                invertedGraph.setRGB(j, i, Color.white.getRGB());
-            }
-        }
-        
-        for(float a = 0; a < width; a += 1){
-            float y = getY(a,equation);
-            if(y < height && y >= 0){
-                System.out.println("(" + a + "," + (int)y + ")");
-                invertedGraph.setRGB((int)a, (int)y, Color.black.getRGB());
-            }
-        }
-        
-        BufferedImage graph = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
-        
-        int i = 0;
-        int k = height-1;
-        for(; i < height && k >= 0; i++, k--){
-            for(int j = 0; j < width; j++){
-                graph.setRGB(j, k, invertedGraph.getRGB(j,i));
-            }
-        }
-        graphPanel.setIcon(new ImageIcon(graph));
         
     }
 
@@ -74,6 +59,27 @@ public class UI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         graphPanel = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        solutionArea = new javax.swing.JTextArea();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        x1 = new javax.swing.JFormattedTextField();
+        y1 = new javax.swing.JFormattedTextField();
+        x2 = new javax.swing.JFormattedTextField();
+        y2 = new javax.swing.JFormattedTextField();
+        x3 = new javax.swing.JFormattedTextField();
+        y3 = new javax.swing.JFormattedTextField();
+        x4 = new javax.swing.JFormattedTextField();
+        y4 = new javax.swing.JFormattedTextField();
+        x5 = new javax.swing.JFormattedTextField();
+        y5 = new javax.swing.JFormattedTextField();
+        solveFor = new javax.swing.JFormattedTextField();
+        answer = new javax.swing.JFormattedTextField();
+        jLabel5 = new javax.swing.JLabel();
+        equationDisplay = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -90,26 +96,305 @@ public class UI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jLabel1.setText("X:");
+
+        jLabel2.setText("Y:");
+
+        solutionArea.setEditable(false);
+        solutionArea.setColumns(20);
+        solutionArea.setRows(5);
+        solutionArea.setEnabled(false);
+        jScrollPane2.setViewportView(solutionArea);
+
+        jLabel3.setText("Solve for the f(x) of:");
+
+        jLabel4.setText("f(x):");
+
+        x1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+
+        y1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+
+        x2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+
+        y2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+
+        x3.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+
+        y3.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+
+        x4.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+
+        y4.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+
+        x5.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+
+        y5.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+
+        solveFor.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        solveFor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                solveForActionPerformed(evt);
+            }
+        });
+
+        answer.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+
+        jLabel5.setText("Solution:");
+
+        jLabel6.setText("Polynomial");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(graphPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 709, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 671, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(equationDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 511, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabel1)
+                                            .addComponent(jLabel2))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(135, 135, 135)
+                                                .addComponent(solveFor, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                    .addComponent(x1, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
+                                                    .addComponent(y1))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                    .addComponent(x2, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
+                                                    .addComponent(y2))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                    .addComponent(x3, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
+                                                    .addComponent(y3)))))
+                                    .addComponent(jLabel3))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(x4, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
+                                        .addComponent(y4))
+                                    .addComponent(jLabel4))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(y5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
+                                    .addComponent(answer, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(x5)))
+                            .addComponent(jLabel5))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 140, Short.MAX_VALUE)
+                .addComponent(graphPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 620, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(136, 136, 136)
-                .addComponent(graphPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
+                .addGap(41, 41, 41)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(x1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(x2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(x3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(x4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(x5, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(y1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(y2)
+                    .addComponent(y3)
+                    .addComponent(y5)
+                    .addComponent(y4))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(solveFor, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(answer, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(40, 40, 40))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(equationDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addComponent(jLabel5)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(graphPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 524, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(136, 136, 136))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void solveForActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_solveForActionPerformed
+        // TODO add your handling code here:
+        System.out.println("Pressed Enter");
+        equation = "";
+        System.out.println(equation);
+        solution = "";
+        System.out.println(solution);
+        x.removeAll(x);
+        y.removeAll(y);
+        
+        if(filledFields()){
+            
+            if(!x1.getText().isEmpty())
+                x.add(Float.parseFloat(x1.getText()));
+            if(!x2.getText().isEmpty())
+                x.add(Float.parseFloat(x2.getText()));
+            if(!x3.getText().isEmpty())
+                x.add(Float.parseFloat(x3.getText()));
+            if(!x4.getText().isEmpty())
+                x.add(Float.parseFloat(x4.getText()));
+            if(!x5.getText().isEmpty())
+                x.add(Float.parseFloat(x5.getText()));
+            if(!y1.getText().isEmpty())
+                y.add(Float.parseFloat(y1.getText()));
+            if(!y2.getText().isEmpty())
+                y.add(Float.parseFloat(y2.getText()));
+            if(!y3.getText().isEmpty())
+                y.add(Float.parseFloat(y3.getText()));
+            if(!y4.getText().isEmpty())
+                y.add(Float.parseFloat(y4.getText()));
+            if(!y5.getText().isEmpty())
+                y.add(Float.parseFloat(y5.getText()));
+            a = Float.parseFloat(solveFor.getText());
+            float[] xset = getfloat(x);
+            float[] yset = getfloat(y);
+           
+            equation = LagrangeInterpolation.getEquation(xset, yset);
+            //System.out.println(equation);
+            solution += "f(x) = " + equation + "\n";
+            solution += LagrangeInterpolation.createSolution(equation, a);
+            //System.out.println(solution);
+            solutionArea.setText("");
+            solutionArea.setText(solution);
+            answerY = LagrangeInterpolation.getY(a, equation);
+            equationDisplay.setText(equation);
+            answer.setText(Float.toString(answerY));
+            
+            BufferedImage invertedGraph = new BufferedImage(500, 500, BufferedImage.TYPE_INT_RGB);
+        int width = invertedGraph.getWidth();
+        int height = invertedGraph.getHeight();
+        
+        for(int i = 0; i < height; i++){
+            for(int j = 0; j < width; j++){
+                invertedGraph.setRGB(j, i, Color.white.getRGB());
+            
+            }
+        }
+        
+        
+        
+        for(float z = 0; z < width; z += 1){
+            float w = LagrangeInterpolation.getY(z,equation);
+            float w1 = LagrangeInterpolation.getY(z+1,equation);
+            if(w < height && w >= 0){
+                //System.out.println("(" + a + "," + (int)y + ")");
+                
+                invertedGraph.setRGB((int)z, (int)Math.floor(w), Color.black.getRGB());
+            }
+        }
+        
+        BufferedImage graph = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
+        
+        int i = 0;
+        int k = height-1;
+        for(; i < height && k >= 0; i++, k--){
+            for(int j = 0; j < width; j++){
+                graph.setRGB(j, k, invertedGraph.getRGB(j,i));
+            }
+        }
+        graphPanel.setIcon(new ImageIcon(graph));
+            
+        }
+        
+    }//GEN-LAST:event_solveForActionPerformed
+    
+    private BufferedImage drawLine(BufferedImage image, int x, int y, int x2, int y2){
+        
+        int w = x2-x;
+        int h = y2 - y;
+        int dx1 = 0 , dy1 = 0, dx2 = 0, dy2 = 0;
+        if(w<0)dx1 = -1; else if(w>0)dx1=1; 
+        if(h<0)dy1 = -1; else if(h>0)dy1=1;
+        if(w<0)dx2 = -1; else if(w>0)dx2=1;
+        
+        int longest = Math.abs(w);
+        int shortest = Math.abs(h);
+        if(!(longest>shortest)){
+            shortest = Math.abs(h);
+            longest = Math.abs(w);
+            
+            if(h<0) dy2 = -1 ; else if(h>0) dy2 = 1;
+            dx2 =0;
+            
+        }
+        
+        int numerator = longest>>1;
+        for(int i = 0; i<=longest;i++){
+            image.setRGB(x,y,Color.BLACK.getRGB());
+            numerator += shortest;
+            
+            if(!(numerator<longest)){
+                numerator -=longest;
+                x += dx1;
+                y += dy1;
+            }else{
+                x += dx2;
+                y += dy2;
+            }
+        }
+        
+        
+        return image;
+    }
+    
+    private float[] getfloat(ArrayList s){
+        
+        float[] retVal;
+        retVal = new float[s.size()];
+        
+        for(int i = 0; i < s.size(); i++){
+            retVal[i] = (Float) s.get(i);
+        }
+        
+        return retVal;
+        
+    }
+    
+    private boolean filledFields(){
+        
+        boolean retVal = false;
+        
+        if(!x1.getText().isEmpty() && !y1.getText().isEmpty() && !x2.getText().isEmpty() && !y2.getText().isEmpty()){
+            retVal = true;
+        }
+        
+        return retVal;
+        
+    }
     /**
      * @param args the command line arguments
      */
@@ -146,128 +431,30 @@ public class UI extends javax.swing.JFrame {
         });
     }
     
-    public String getEquation(float a, float[] x, float[] y){
-        String equation = "";
-        
-        for(int i = 0; i < x.length; i++){
-            for(int j = 0; j < x.length; j++){
-                if(j != i){
-                    equation += "(x-" + x[j] + ")/(" + (x[i]-x[j]) + ")*";
-                }
-            }
-            equation += "(" + y[i] + ")";
-            if(i < x.length-1){
-                equation += "+";
-            }
-        }
-        
-        return equation;
-        
-    }
-    
-    public float getY(float x, String equation){
-        
-        float retVal = 0;
-        String a = Float.toString(x);
-        String[] lArray = equation.split("\\+");
-        String currNumber = "";
-        
-        for(String l : lArray){
-            l = l.replaceAll("x", a);
-            System.out.println(l);
-            int i = 1;
-        
-            float currL = 0;
-            char currLOperator = '+';
-            for(i = 0; i < l.length();){
-                if(l.charAt(i) == '('){
-                    i++;
-                    while(l.charAt(i) != ')'){
-                        currNumber += l.charAt(i);
-                        i++;
-                    }
-                    //System.out.println(calculate(currNumber));
-                    currL = calculate(currLOperator,currL,calculate(currNumber));
-                    //System.out.println("currL: " + currL);
-                    currNumber = "";
-                    i++;
-                }
-                else{
-                    if(i < l.length() && isOperator(l.charAt(i)+"")){
-                        currLOperator = l.charAt(i);
-                        i++;
-                    }
-                }
-            }
-            
-            retVal += currL;
-        }
-        return retVal;
-        
-    }
-    
-    public float calculate(String string){
-        
-        float retVal = 0;
-        float operand2 = 0;
-        char operator = '+';
-        String currNumber = "";
-        
-        int i = 0;
-        while(i < string.length() && !isOperator(string.charAt(i)+"")){
-            currNumber += string.charAt(i);
-            i++;
-        }
-        if(i < string.length() && !currNumber.isEmpty()){
-            retVal = Float.parseFloat(currNumber);
-            currNumber = "";
-        }
-        if(i < string.length() && isOperator(string.charAt(i)+"")){
-            operator = string.charAt(i);
-            i++;
-        }
-        while(i < string.length()){
-            currNumber += string.charAt(i);
-            i++;
-        }
-        if(!currNumber.isEmpty()){
-            operand2 = Float.parseFloat(currNumber);
-        }
-        
-        return calculate(operator,retVal,operand2);
-    
-    }
-    
-    public float calculate(char operator, float operand1, float operand2){
-        
-        float retVal = operand1;
-        
-        switch(operator){
-            case '+':
-                retVal =+ operand2;
-                break;
-            case '-':
-                retVal -= operand2;
-                break;
-            case '/':
-                retVal /= operand2;
-                break;
-            case '*':
-                retVal *= operand2;
-                break;
-        }
-        
-        return retVal;
-        
-    }
-    
-    public boolean isOperator(String string){
-        return string.matches("\\+|\\-|\\*|\\/");
-    }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JFormattedTextField answer;
+    private javax.swing.JTextField equationDisplay;
     private javax.swing.JLabel graphPanel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextArea solutionArea;
+    private javax.swing.JFormattedTextField solveFor;
+    private javax.swing.JFormattedTextField x1;
+    private javax.swing.JFormattedTextField x2;
+    private javax.swing.JFormattedTextField x3;
+    private javax.swing.JFormattedTextField x4;
+    private javax.swing.JFormattedTextField x5;
+    private javax.swing.JFormattedTextField y1;
+    private javax.swing.JFormattedTextField y2;
+    private javax.swing.JFormattedTextField y3;
+    private javax.swing.JFormattedTextField y4;
+    private javax.swing.JFormattedTextField y5;
     // End of variables declaration//GEN-END:variables
 }
